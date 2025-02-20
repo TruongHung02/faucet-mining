@@ -14,8 +14,10 @@ const config = {
   window_size: "1280,780",
 
   walletAddress: "0x9422117d03A7EBbe0974dCF34Dd0f29bA1efe19E",
+  proxy: "hoangkhoi:node@160.191.51.205:33578",
 };
-
+const [proxyUsername, proxyPassword, IpAddress, port] =
+  config.proxy.split(/[@:]/);
 const pathToExtension = path.join(process.cwd(), "CaptchaSolver");
 
 const argsLaunchOption = [
@@ -29,6 +31,7 @@ const argsLaunchOption = [
   `--disable-extensions-except=${pathToExtension}`,
   `--load-extension=${pathToExtension}`,
   "--enable-features=ClipboardAPI",
+  `--proxy-server=${IpAddress}:${port}`,
 ];
 
 function delay(seconds) {
@@ -47,6 +50,7 @@ async function autoMining(walletAddress) {
     width: Number(config.window_size.split(",")[0]),
     height: Number(config.window_size.split(",")[1]),
   });
+  await page.authenticate({ username: proxyUsername, password: proxyPassword });
   await page.goto(
     "chrome-extension://hlifkpholllijblknnmbfagnkjneagid/popup/popup.html#/",
     {
@@ -65,6 +69,10 @@ async function autoMining(walletAddress) {
   await sepoliaPage.setViewport({
     width: Number(config.window_size.split(",")[0]),
     height: Number(config.window_size.split(",")[1]),
+  });
+  await sepoliaPage.authenticate({
+    username: proxyUsername,
+    password: proxyPassword,
   });
   await sepoliaPage.goto("https://sepolia-faucet.pk910.de/", {
     waitUntil: "networkidle2",
