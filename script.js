@@ -108,7 +108,7 @@ async function autoMining(walletAddress) {
 
         await delay(5);
         await browser.close();
-        autoMining(walletAddress);
+        await autoMining(walletAddress);
       }
     } catch (error) {}
   }
